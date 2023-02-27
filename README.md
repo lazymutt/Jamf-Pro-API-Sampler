@@ -36,6 +36,12 @@ This is an experimental script that didn't pan out as well as I had hoped, YMMV.
 
 
 
+##### find_the_jamf_id_of_this_machine.py
+
+Using the classic API, find the JAMF ID of the computer the script is running on. It returns the full computer record, but I just show the ID.
+
+
+
 ## Author
 
 Todd McDaniel, lazymutt@mac.com
