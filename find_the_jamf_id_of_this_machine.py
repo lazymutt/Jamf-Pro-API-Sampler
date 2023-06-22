@@ -10,7 +10,7 @@ def main():
     hardware = json.loads(local_hardware_raw)
     local_uuid = hardware['SPHardwareDataType'][0]['platform_UUID']
 
-    jamf_test_url = jamf_hostname + '/JSSResource/computers/udid/' + local_uuid
+    jamf_test_url = f'{jamf_hostname}/JSSResource/computers/udid/{local_uuid}'
     headers = {'Accept': 'application/json', }
     response = requests.get(url=jamf_test_url, headers=headers, auth=(jamf_user, jamf_password), timeout=3)
 
