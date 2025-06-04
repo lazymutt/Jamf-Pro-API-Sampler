@@ -29,7 +29,6 @@ Python 2/Classic API seen here: https://apple.lib.utah.edu/using-the-jamf-pro-ap
 import requests
 from local_credentials import jamf_user, jamf_password, jamf_hostname
 
-
 def parse_jss(uapi_token):
     '''
     pages through all machines in jss, parses computername, udid and serial numbers
@@ -46,18 +45,18 @@ def parse_jss(uapi_token):
 
     while not stop_paging:
         headers = {'Accept': 'application/json', 'Authorization': 'Bearer ' + uapi_token}
-        response = requests.get(url=jamf_hostname + "/uapi/preview/computers?section=GENERAL&page-size=" + str(page_size) + "&page=" + str(current_page) + "&sort=id%3Aasc", headers=headers)
+        response = requests.get(url=jamf_hostname + "/api/v1/computers-inventory/?section=GENERAL&section=HARDWARE&page-size=" + str(page_size) + "&page=" + str(current_page) + "&sort=id%3Aasc", headers=headers)
+
         response_json = response.json()
         total_computers = response_json["totalCount"]
 
         clients_raw = response_json['results']
         for client in clients_raw:
-
             try:
-                if serial_dict[client['serialNumber']]:
-                    serial_dict[client['serialNumber']].append(client['id'])
+                if serial_dict[client['hardware']['serialNumber']]:
+                    serial_dict[client['hardware']['serialNumber']].append(client['id'])
             except KeyError:
-                serial_dict[client['serialNumber']] = [client['id']]
+                serial_dict[client['hardware']['serialNumber']] = [client['id']]
 
             try:
                 if udid_dict[client['udid']]:
@@ -66,10 +65,10 @@ def parse_jss(uapi_token):
                 udid_dict[client['udid']] = [client['id']]
 
             try:
-                if name_dict[client['name']]:
-                    name_dict[client['name']].append(client['id'])
+                if name_dict[client['general']['name']]:
+                    name_dict[client['general']['name']].append(client['id'])
             except KeyError:
-                name_dict[client['name']] = [client['id']]
+                name_dict[client['general']['name']] = [client['id']]
 
         current_page += 1
         total_consumed += len(clients_raw)
